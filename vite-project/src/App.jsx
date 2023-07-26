@@ -16,10 +16,16 @@ function App() {
       <h1>THIS IS ACTUALLY {count} MAGIC</h1>
       <div>They call me {name}</div>
       <div children={<h2>Goodbye, moonman</h2>}/>
-      <input type="text" value={name} onChange={handleNameChange} />
+      <input id="FINE" type="text" value={name} onChange={handleNameChange} />
       <button id="thisButton" onClick={(e)=>{setCount(count+1)}}>Seent</button>
+
+      <ToDos title={name}/>
     </div>
   );
+}
+
+function ToDos(props) {
+  return <div><h3 style={{padding: 30, backgroundColor: 'pink'}}>{props.title}</h3></div>
 }
 
 export default App;
