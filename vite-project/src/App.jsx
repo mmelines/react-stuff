@@ -6,11 +6,16 @@ import "./App.css";
 function App() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("");
+
+  function handleNameChange (e) {
+    setName(e.target.value);
+  };
+
   return (
     <div>
       <h1>THIS IS ACTUALLY {count} MAGIC</h1>
       <div>They call me {name}</div>
-      <input type="text" value={name} onChange={(e)=>setName(e.target.value)}></input>
+      <input type="text" value={name} onChange={handleNameChange}></input>
       <button id="thisButton" onClick={(e)=>{setCount(count+1)}}>Seent</button>
     </div>
   );
