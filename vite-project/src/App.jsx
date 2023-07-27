@@ -1,23 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState("");
-
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
   return (
     <div>
       <h1>ToDo List</h1>
-      {/* <div>They call me {name}</div>
-      <div children={<h2>Goodbye, moonman</h2>}/>
-      <input id="FINE" type="text" value={name} onChange={handleNameChange} />
-      <button id="thisButton" onClick={(e)=>{setCount(count+1)}}>Seent</button> */}
 
       <ToDos title="To Do List:" />
     </div>
@@ -33,32 +22,78 @@ function ToDos(props) {
   ]);
   const [newToDo, setNewToDo] = useState("");
   const [lastToDoId, setLastToDoId] = useState(todos.length);
-  const appendToDos = function (e) {
-    const newToDoId = lastToDoId+1
-    let updatedArray = [...todos,{name:newToDo, id:newToDoId}];
+
+  const inputRef = useRef(null);
+  useEffect(function setFocusOnInput() {
+    inputRef.current.focus();
+  }, []);
+
+  function appendToDos(e) {
+    e.preventDefault();
+    const newToDoId = lastToDoId + 1;
+    let updatedArray = [...todos, { name: newToDo, id: newToDoId }];
     setLastToDoId(newToDoId);
     setTodos(updatedArray);
     setNewToDo("");
-  };
+  }
+  function deleteToDo(toDoId) {
+    const updatedToDos = todos.filter((todo) => todo.id !== toDoId);
+    setTodos(updatedToDos);
+  }
   return (
     <div>
-      <div id="input-container">
+      <form id="input-container" onSubmit={appendToDos}>
         <label htmlFor="newToDoInput">What are you doin' today?</label>
-        <input id="newToDoInput" type="text" value={newToDo} onChange={(e)=>{setNewToDo(e.target.value)}}></input>
+        <br />
+        <input
+          id="newToDoInput"
+          ref={inputRef}
+          type="text"
+          value={newToDo}
+          onChange={(e) => {
+            setNewToDo(e.target.value);
+          }}
+        ></input>
         <div id="displayNewTodoInput">{newToDo}</div>
-        <button id="sureAboutToDoButton" onClick={appendToDos}>Hit it!</button>
-      </div>
+        <button id="sureAboutToDoButton" disabled={newToDo.length === 0}>
+          Hit it!
+        </button>
+      </form>
       <div id="list-container">
-        <ul>
-          {todos.map((todo) => (
-            <li key={todo.id} id={`todo-${todo.id}`}>
-              {todo.name}
-            </li>
-          ))}
-        </ul>
+        {todos.length > 0 ? (
+          <ToDoList>
+              {todos.map((todo) => (
+                <ToDoListItem todo={todo} key={todo.id} onDelete={() => deleteToDo(todo.id)}/>
+              ))}
+          </ToDoList>
+        ) : null}
       </div>
     </div>
   );
+}; 
+
+function ToDoList({children}) {
+  return (
+    <ul style={{border:"1px solid black", backgroundColor:"black", color:"lightgreen", fontFamily:"monospace", listStyleType:"none"}}>
+      {children}
+    </ul>
+  )
 }
+
+function ToDoListItem({todo, onDelete}){
+  return (
+    <li style={{padding:"30"}} id={`todo-${todo.id}`}>
+      <div>
+        {todo.name}
+        <button
+          id={`deleteToDoIcon-${todo.id}`}
+          onClick={onDelete}
+        >
+          X
+        </button>
+      </div>
+    </li>
+  );
+};
 
 export default App;
