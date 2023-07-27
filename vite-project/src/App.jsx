@@ -32,8 +32,11 @@ function ToDos(props) {
     { name: "research recipes", id: 4 },
   ]);
   const [newToDo, setNewToDo] = useState("");
+  const [lastToDoId, setLastToDoId] = useState(todos.length);
   const appendToDos = function (e) {
-    let updatedArray = [...todos,{name:newToDo, id:(todos.length+1)}];
+    const newToDoId = lastToDoId+1
+    let updatedArray = [...todos,{name:newToDo, id:newToDoId}];
+    setLastToDoId(newToDoId);
     setTodos(updatedArray);
     setNewToDo("");
   };
